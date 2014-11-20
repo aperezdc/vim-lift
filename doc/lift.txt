@@ -1,0 +1,51 @@
+*lift.txt*   "Lift" completions from multiple completion functions.
+
+Version: 0.1
+Author: Adrián Pérez de Castro <aperez@igalia.com>
+License: GPLv3
+
+CONTENTS                                                *lift-contents*
+
+Introduction                  |lift-introduction|
+Variables                     |lift-variables|
+Key Mappings                  |lift-key-mappings|
+
+
+===========================================================================
+INTRODUCTION                                           *lift-introduction*
+
+
+===========================================================================
+VARIABLES                                              *lift-variables*
+
+g:lift#max_list_items
+		Maximum number of results to feed into Vim's completion
+		system. If the total amount of completion candidates
+		gathered from all the sources goes over this number, some
+		of the candidates will not br shown. (Default: 100).
+
+g:lift#max_source_items
+		Maximum number of results to fetch from each completion
+		source. (Default: 50).
+
+g:lift#sources
+		List with the names of the sources to use to feed Vim's
+		completion system. (Default: ['omni', 'user']).
+
+g:lift#annotate_sources
+		Show in the completion menu the name of the source that
+		provided each completion candidate. (Default: 1).
+
+
+===========================================================================
+KEY MAPPINGS                                           *lift-key-mappings*
+
+lift#trigger_comlete()
+		Use this function to trigger completion. Typically this
+		is used from an insert mode key mapping to trigger
+		completion. A popular setting is to bind the <Tab> key:
+>
+		inoremap <expr><Tab> lift#trigger_completion()
+<
+
+vim:tw=78:sw=8:ts=8:ft=help:norl:noet
