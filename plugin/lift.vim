@@ -70,7 +70,7 @@ function lift#complete(findstart, base)
 		return -1
 	endif
 
-	let l:annotation_length = s:longest_source_name(g:lift#sources)
+	let l:annotation_length = s:longest_source_name(g:lift#sources) + 1
 	let l:lifted_result = []
 	for l:source in g:lift#sources
 		let l:complete = lift#completion_function_for_name(l:source)
@@ -84,12 +84,12 @@ function lift#complete(findstart, base)
 					" Convert strings to dictionary items to be able to add the source name.
 					if type(l:match) == type("")
 						let l:match = { 'word': l:match,
-						              \ 'menu': printf(' %*s · %s', l:annotation_length, l:source, l:match.menu) }
+						              \ 'menu': printf('%*s · %s', l:annotation_length, l:source, l:match.menu) }
 					else
 						if has_key(l:match, 'menu')
-							let l:match.menu = printf(' %*s · %s', l:annotation_length, l:source, l:match.menu)
+							let l:match.menu = printf('%*s · %s', l:annotation_length, l:source, l:match.menu)
 						else
-							let l:match.menu = ' ' . l:source
+							let l:match.menu = printf('%*s', l:annotation_length,  l:source)
 						endif
 					endif
 					call add(l:lifted_result, l:match)
