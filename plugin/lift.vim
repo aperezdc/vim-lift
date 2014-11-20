@@ -120,14 +120,12 @@ endfunction
 
 
 function s:buffer_insert_enter()
-	echo 'lift: omni=' . &omnifunc . ' user=' . &completefunc
 	let b:lift_saved_completefunc = &completefunc
 	setlocal completefunc=lift#complete
 endfunction
 
 function s:buffer_insert_leave()
 	let &l:completefunc = b:lift_saved_completefunc
-	echo 'lift: paused'
 endfunction
 
 augroup Lift
