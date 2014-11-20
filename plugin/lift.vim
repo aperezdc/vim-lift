@@ -61,7 +61,10 @@ function lift#complete(findstart, base)
 		for l:source in g:lift#sources
 			let l:source = lift#completion_function_for_name(l:source)
 			if l:source != ''
-				return eval(l:source . '(a:findstart, a:base)')
+				let l:pos eval(l:source . '(a:findstart, a:base)')
+				if l:pos >= 0
+					return l:pos
+				endif
 			endif
 		endfor
 		return -1
