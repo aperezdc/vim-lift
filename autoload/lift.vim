@@ -72,7 +72,6 @@ function lift#complete(findstart, base)
 	endif
 
 	let l:annotation_length = s:longest_source_name(g:lift#sources) + 1
-	let l:lifted_result = []
 	for l:source in g:lift#sources
 		let l:complete = lift#completion_function_for_name(l:source)
 		if l:complete != '' && l:complete != 'lift#complete'
@@ -93,20 +92,23 @@ function lift#complete(findstart, base)
 							let l:match.menu = printf('%*s', l:annotation_length,  l:source)
 						endif
 					endif
-					call add(l:lifted_result, l:match)
+					call complete_add(l:match)
 					if l:count > g:lift#max_source_items
 						break
 					endif
 				endfor
 			else
-				let l:lifted_result = extend(l:lifted_result, l:matches[:g:lift#max_source_items])
+				for l:match in l:matches
+					call complete_add(l:match)
+				endfor
 			endif
 		endif
-		if len(l:lifted_result) > g:lift#max_list_items
-			return l:lifted_result[:g:lift#max_list_items]
+
+		if complete_check()
+			break
 		endif
 	endfor
-	return l:lifted_result
+	return []
 endfunction
 
 
