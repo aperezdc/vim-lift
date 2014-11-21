@@ -85,12 +85,12 @@ are scanned:
 `g:lift#near#backward_lines`
 		Number of lines to scan from before the cursor. Use
 		`-1` to scan from the beginning of the buffer, and `0` to
-		scan from the first visible line. (Default: 35).
+		scan from the first visible line. (Default: 150).
 
 `g:lift#near#forward_lines`
 		Number of lines to scan after the cursor. Use `-1` to
 		scan to the end of the buffer, and `0` to scan to the
-		last visible line. (Default: 20).
+		last visible line. (Default: 50).
 
 This source is enabled by default.
 

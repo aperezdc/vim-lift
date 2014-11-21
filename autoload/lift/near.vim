@@ -11,9 +11,9 @@ set cpo&vim
 
 
 let g:lift#near#backward_lines =
-	\ get(g:, 'lift#near#backward_lines', 35)
+	\ get(g:, 'lift#near#backward_lines', 150)
 let g:lift#near#forward_lines =
-	\ get(g:, 'lift#near#forward_lines', 20)
+	\ get(g:, 'lift#near#forward_lines', 50)
 
 
 " TODO: This is kinda crappy, inline it in the completion function or
