@@ -82,19 +82,20 @@ function lift#complete(findstart, base)
 			if g:lift#annotate_sources
 				let l:count = 0
 				for l:match in l:matches
-					let l:count += 1
 					" Convert strings to dictionary items to be able to add the source name.
-					if type(l:match) == type("")
-						let l:match = { 'word': l:match,
-						              \ 'menu': printf('%*s · %s', l:annotation_length, l:source, l:match.menu) }
+					if type(l:match) == type('')
+						call complete_add({ 'word': l:match,
+						                  \ 'menu': printf('%*s', l:annotation_length, l:source) })
 					else
 						if has_key(l:match, 'menu')
 							let l:match.menu = printf('%*s · %s', l:annotation_length, l:source, l:match.menu)
 						else
 							let l:match.menu = printf('%*s', l:annotation_length,  l:source)
 						endif
+						call complete_add(l:match)
 					endif
-					call complete_add(l:match)
+
+					let l:count += 1
 					if l:count > g:lift#max_source_items
 						break
 					endif
