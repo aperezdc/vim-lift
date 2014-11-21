@@ -64,7 +64,7 @@ function lift#complete(findstart, base)
 		for l:source in g:lift#sources
 			let l:source = lift#completion_function_for_name(l:source)
 			if l:source != ''
-				let l:pos = eval(l:source . '(a:findstart, a:base)')
+				let l:pos = function(l:source)(a:findstart, a:base)
 				if l:pos >= 0
 					return l:pos
 				endif
@@ -77,7 +77,7 @@ function lift#complete(findstart, base)
 	for l:source in g:lift#sources
 		let l:complete = lift#completion_function_for_name(l:source)
 		if l:complete != '' && l:complete != 'lift#complete'
-			let l:matches = eval(l:complete . '(a:findstart, a:base)')
+			let l:matches = function(l:complete)(a:findstart, a:base)
 			" Add a note indicating which one
 			if g:lift#annotate_sources
 				let l:count = 0
