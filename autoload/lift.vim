@@ -15,12 +15,14 @@ let g:lift#max_list_items =
 let g:lift#max_source_items =
 	\ get(g:, 'lift#max_source_items', 50)
 let g:lift#sources =
-	\ get(g:, 'lift#sources', ['omni', 'user'])
+	\ get(g:, 'lift#sources', ['omni', 'near', 'user'])
 let g:lift#annotate_sources =
 	\ get(g:, 'lift#annotate_sources', 1)
 
 
-let s:source_name_map = {}
+let s:source_name_map = {
+	\ 'near': 'lift#near#complete'
+  \ }
 
 
 function lift#register_source(name, function)
