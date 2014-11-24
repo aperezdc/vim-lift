@@ -20,8 +20,17 @@ let g:lift#annotate_sources =
 	\ get(g:, 'lift#annotate_sources', 1)
 
 
+" Populate the built-in sources:
+"
+"  * Provided by Lift:
+"    - near (autoload/lift/near.vim)
+""
+"  * Provided by Vim:
+"    - syntax ($RUNTIME/autoload/syntaxcomplete.vim)
+"
 let s:source_name_map = {
-	\ 'near': 'lift#near#complete'
+	\ 'near'   : 'lift#near#complete',
+	\ 'syntax' : 'syntaxcomplete#Complete'
   \ }
 
 
