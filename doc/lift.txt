@@ -26,6 +26,29 @@ VARIABLES                                              *lift-variables*
 
 The following variables can be used to configure Lift:
 
+`g:lift#sources`
+		Dictionary with the names of the sources to use to feed
+		Vim's completion system for each 'filetype'. Each key of
+		the dictionary is the name of the file type, and its
+		associated value is a list with the names of the sources
+		to use for that file type.
+
+		It is possible to specify a set of fall-back sources to
+		be used for file types which do not have a key in the
+		dictionary using the `_` key.
+
+		See |lift-sources| for a list of the included sources, and
+		|lift-source-custom| for instructions on how to integrate
+		and use third party sources.
+
+		Default value:
+>
+		let g:lift#sources = { '_': ['near', 'omni', 'user']}
+<
+`g:lift#annotate_sources`
+		Show in the completion menu the name of the source that
+		provided each completion candidate. (Default: 1).
+
 `g:lift#max_list_items`
 		Maximum number of results to feed into Vim's completion
 		system. If the total amount of completion candidates
@@ -35,16 +58,6 @@ The following variables can be used to configure Lift:
 `g:lift#max_source_items`
 		Maximum number of results to fetch from each completion
 		source. (Default: 50).
-
-`g:lift#sources`
-		List with the names of the sources to use to feed Vim's
-		completion system. See the |lift-sources| for a list of
-		the included sources and how to integrate third party
-		sources. (Default: ['near', 'omni', 'user']).
-
-`g:lift#annotate_sources`
-		Show in the completion menu the name of the source that
-		provided each completion candidate. (Default: 1).
 
 
 ===========================================================================

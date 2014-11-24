@@ -15,9 +15,20 @@ let g:lift#max_list_items =
 let g:lift#max_source_items =
 	\ get(g:, 'lift#max_source_items', 50)
 let g:lift#sources =
-	\ get(g:, 'lift#sources', ['omni', 'near', 'user'])
+	\ get(g:, 'lift#sources', { '_': ['omni', 'near', 'user'] })
 let g:lift#annotate_sources =
 	\ get(g:, 'lift#annotate_sources', 1)
+
+
+function lift#active_sources()
+	if has_key(b:, 'lift_sources')
+		return b:lift_sources
+	elseif &ft != '' && has_key(g:lift#sources, &ft)
+		return g:lift#sources[&ft]
+	else
+		return get(g:lift#sources, '_', [])
+	endif
+endf
 
 
 " Populate the built-in sources:
@@ -69,8 +80,10 @@ endfunction
 
 
 function lift#complete(findstart, base)
+	let l:active_sources = lift#active_sources()
+
 	if a:findstart
-		for l:source in g:lift#sources
+		for l:source in l:active_sources
 			let l:source = lift#completion_function_for_name(l:source)
 			if l:source != ''
 				let l:pos = function(l:source)(a:findstart, a:base)
@@ -82,8 +95,8 @@ function lift#complete(findstart, base)
 		return -1
 	endif
 
-	let l:annotation_length = s:longest_source_name(g:lift#sources) + 1
-	for l:source in g:lift#sources
+	let l:annotation_length = s:longest_source_name(l:active_sources) + 1
+	for l:source in l:active_sources
 		let l:complete = lift#completion_function_for_name(l:source)
 		if l:complete != '' && l:complete != 'lift#complete'
 			let l:matches = function(l:complete)(a:findstart, a:base)
