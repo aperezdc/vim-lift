@@ -108,6 +108,9 @@ function lift#complete(findstart, base)
 					if l:count > g:lift#max_source_items
 						break
 					endif
+
+					" Allow l:match to be of different type in the next iteration.
+					unlet l:match
 				endfor
 			else
 				for l:match in l:matches
