@@ -15,6 +15,7 @@ Sources                       |lift-sources|
   User Completion             |lift-source-user|
   Syntax keywords             |lift-source-syntax|
   Adding sources              |lift-source-custom|
+API Reference                 |lift-api-reference|
 
 
 ===========================================================================
@@ -163,6 +164,25 @@ function which implements the completion.
 Do not forget to add the name of your completion source to the
 `g:lift#sources` variables (see |lift-variables|).
 
+
+===========================================================================
+API REFERENCE                                          *lift-api-reference*
+
+lift#register_source({name}, {function})
+	Adds a source to Lift. The {name} must be unique, and {function}
+	must be the name of a completion function (see |compl-function|).
+
+lift#all_sources()
+	Returns a list with the names of all the sources known by Lift.
+
+lift#active_sources()
+	Returns a list with the names of the active sources for the
+	current buffer.
+
+lift#complete({findstart}, {base})
+	The Lift completion function. You do not need to use it directly,
+	as lift will handle setting 'completefunc' to if while in insert
+	mode, and restoring the original value when in normal mode.
 
 
 vim:tw=78:sw=8:ts=8:ft=help:norl:noet
