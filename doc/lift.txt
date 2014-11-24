@@ -13,6 +13,7 @@ Sources                       |lift-sources|
   Nearby words                |lift-source-near|
   Omni Completion             |lift-source-omni|
   User Completion             |lift-source-user|
+  Syntax keywords             |lift-source-syntax|
   Adding sources              |lift-source-custom|
 
 
@@ -113,6 +114,16 @@ The `user` source uses the function configured for User Completion (see
 
 The source is enabled by default, but it will only return completions if
 'completefunc' is set.
+
+
+---------------------------------------------------------------------------
+SOURCE - SYNTAX KEYWORDS                               *lift-source-syntax*
+
+The `syntax` source uses the `syntaxcomplete#Complete` function from the
+runtime files included with the editor. It provides completions from the
+set of words defined as keywords for the current file type.
+
+This source has no options, and it is disabled by default.
 
 
 ---------------------------------------------------------------------------
