@@ -46,6 +46,24 @@ let s:source_name_map = {
 
 
 function lift#register_source(name, function)
+	for l:key in keys(s:source_name_map)
+		" Check that we are not adding a duplicate key.
+		if l:key == a:name
+			echoerr 'lift#register_source: A source named "'
+				\ . a:name . '" was already registered.'
+			return
+		endif
+
+		" Check that the completion function is not already
+		" associated to some other source name.
+		if s:source_name_map[l:key] == a:function
+			echoerr 'lift#register_source: The function "'
+				\ . a:function . '" is already being used for '
+				\ . 'source "' . l:key . '"'
+			return
+		endif
+	endfor
+
 	let s:source_name_map[a:name] = a:function
 endfunction
 
