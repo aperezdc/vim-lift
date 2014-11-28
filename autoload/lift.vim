@@ -127,7 +127,7 @@ function lift#complete(findstart, base)
 						call complete_add({ 'word': l:match,
 						                  \ 'menu': printf('%*s', l:annotation_length, l:source) })
 					else
-						if has_key(l:match, 'menu')
+						if has_key(l:match, 'menu') && len(l:match.menu) > 0
 							let l:match.menu = printf('%*s · %s', l:annotation_length, l:source, l:match.menu)
 						else
 							let l:match.menu = printf('%*s', l:annotation_length,  l:source)
