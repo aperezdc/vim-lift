@@ -160,7 +160,7 @@ endfunction
 
 function lift#trigger_completion()
 	if pumvisible()
-		return "\<C-p>"
+		return "\<C-n>"
 	endif
 
 	if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
