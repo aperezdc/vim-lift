@@ -98,26 +98,38 @@ endfunction
 
 
 function lift#complete(findstart, base)
-	let l:active_sources = lift#active_sources()
-
 	if a:findstart
-		for l:source in l:active_sources
-			let l:source = lift#completion_function_for_name(l:source)
-			if l:source != ''
-				let l:pos = function(l:source)(a:findstart, a:base)
+		let b:lift_complete_sources = []
+		let b:lift_complete_starts = []
+		for l:source in lift#active_sources()
+			let l:source_func = lift#completion_function_for_name(l:source)
+			if l:source_func != ''
+				let l:pos = function(l:source_func)(1, a:base)
 				if l:pos >= 0
-					return l:pos
+					call add(b:lift_complete_sources, l:source)
+					call add(b:lift_complete_starts, l:pos)
 				endif
 			endif
 		endfor
-		return -1
+
+		if len(b:lift_complete_starts) == 0
+			return -1
+		endif
+
+		let l:pos = b:lift_complete_starts[0]
+		for l:p in b:lift_complete_starts
+			if l:p < l:pos
+				let l:pos = l:p
+			endif
+		endfor
+		return l:pos
 	endif
 
-	let l:annotation_length = s:longest_source_name(l:active_sources) + 1
-	for l:source in l:active_sources
+	let l:annotation_length = s:longest_source_name(b:lift_complete_sources) + 1
+	for l:source in b:lift_complete_sources
 		let l:complete = lift#completion_function_for_name(l:source)
 		if l:complete != '' && l:complete != 'lift#complete'
-			let l:matches = function(l:complete)(a:findstart, a:base)
+			let l:matches = function(l:complete)(0, a:base)
 			" Add a note indicating which one
 			if g:lift#annotate_sources
 				let l:count = 0
