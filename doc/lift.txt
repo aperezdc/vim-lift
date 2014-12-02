@@ -66,6 +66,15 @@ The following variables can be used to configure Lift:
 		types. (Default: { `'quickfix'`:`1`, `'nofile'`:`1`, `'help'`:`1`,
 		`'directory'`:`1`, `'unlisted'`:`1`, `'unite'`:`1` }).
 
+`g:lift#close_preview_window`
+		Handle closing the preview window automatically after
+		choosing a completion. Manually setting this value to `1`
+		may be needed if you use a completion function that opens
+		the preview window by itself and it is not closed properly
+		when using it as a source. For example, this can be used
+		with |jedi-vim|.  (Default: 1 if 'completeopt' contains
+		`preview`).
+
 
 ===========================================================================
 KEY MAPPINGS                                           *lift-key-mappings*
