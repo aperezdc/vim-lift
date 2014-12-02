@@ -60,6 +60,12 @@ The following variables can be used to configure Lift:
 		Maximum number of results to fetch from each completion
 		source. (Default: 50).
 
+`g:lift#blacklist_buffers`
+		Buffer types in which disable the plug-in. This must be
+		a dictionary, with the keys being the names of the buffer
+		types. (Default: { `'quickfix'`:`1`, `'nofile'`:`1`, `'help'`:`1`,
+		`'directory'`:`1`, `'unlisted'`:`1`, `'unite'`:`1` }).
+
 
 ===========================================================================
 KEY MAPPINGS                                           *lift-key-mappings*
