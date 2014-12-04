@@ -125,11 +125,24 @@ function lift#complete(findstart, base)
 		return l:pos
 	endif
 
+	let l:refresh = ''
 	let l:annotation_length = s:longest_source_name(b:lift_complete_sources) + 1
 	for l:source in b:lift_complete_sources
 		let l:complete = lift#completion_function_for_name(l:source)
 		if l:complete != '' && l:complete != 'lift#complete'
 			let l:matches = function(l:complete)(0, a:base)
+
+			" If we are given a dictionary, make it into a list and check .refresh
+			if type(l:matches) == type({})
+				let l:dict = l:matches
+				unlet l:matches  " Avoid error about different type on reassignment
+				let l:matches = get(l:dict, 'words', [])
+				if get(l:dict, 'refresh', '') == 'always'
+					let l:refresh = 'always'
+				endif
+				unlet l:dict
+			endif
+
 			" Add a note indicating which one
 			if g:lift#annotate_sources
 				let l:count = 0
@@ -160,13 +173,14 @@ function lift#complete(findstart, base)
 					call complete_add(l:match)
 				endfor
 			endif
+			unlet l:matches
 		endif
 
 		if complete_check()
 			break
 		endif
 	endfor
-	return []
+	return { 'words': [], 'refresh': l:refresh }
 endfunction
 
 
