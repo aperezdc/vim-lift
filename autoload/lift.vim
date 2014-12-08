@@ -188,11 +188,10 @@ function lift#trigger_completion()
 	if pumvisible()
 		return "\<C-n>"
 	endif
-
-	if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
+	let l:col = col('.') - 1
+	if !l:col || getline('.')[l:col - 1] =~ '\s'
 		return "\<Tab>"
 	endif
-
 	return "\<C-x>\<C-u>"
 endfunction
 
