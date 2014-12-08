@@ -34,6 +34,22 @@ function s:word_under_cursor()
 endfunction
 
 
+function s:add_completions_from_line(completions, seen, lineno, word, fullword_re)
+	for l:w in split(getline(a:lineno), '\W\+')
+		if has_key(a:seen, l:w)
+			" Skip words for which we already generated a result.
+			continue
+		endif
+
+		let l:completion = strpart(l:w, len(a:word), len(l:w))
+		if len(l:completion) > 0 && l:w =~ a:fullword_re
+			call add(a:completions, { 'word': l:completion, 'abbr': l:w })
+			let a:seen[l:w] = 1
+		endif
+	endfor
+endfunction
+
+
 function lift#near#complete(findstart, base)
 	if a:findstart
 		let l:line = getline('.')
@@ -48,10 +64,11 @@ function lift#near#complete(findstart, base)
 	endif
 
 	let l:word = s:word_under_cursor()
-	let l:fullword = a:base . l:word
-	if len(l:fullword) < 1
+	let l:fullword_re = a:base . l:word
+	if len(l:fullword_re) < 1
 		return []
 	endif
+	let l:fullword_re = '^' . l:fullword_re . '.*$'
 
 	let l:line = line('.')
 
@@ -70,30 +87,23 @@ function lift#near#complete(findstart, base)
 	endif
 
 	let l:matches = []
+	let l:seen = {}
 
-	" Matches from the current line backwards
-	let l:cur = l:line
-	while l:cur != -1
-		for l:w in split(getline(l:cur), '\W\+')
-			let l:completion = strpart(l:w, len(l:word), len(l:w))
-			if len(l:completion) > 0 && l:w =~ '^' . l:fullword . '.*$'
-				call add(l:matches, { 'word': l:completion, 'abbr': l:w })
-			endif
-		endfor
-		" Make sure we are not making the editor jank.
-		if complete_check()
-			break
-		endif
+	" Current line
+	call s:add_completions_from_line(l:matches, l:seen, l:line, l:word, l:fullword_re)
 
-		if l:cur < l:start_line
-			let l:cur = l:line + 1
-		elseif l:cur > l:end_line
-			let l:cur = -1
-		elseif l:cur <= l:line
-			let l:cur -= 1
-		else
-			let l:cur += 1
-		endif
+	" Backwards
+	let l:current = l:line - 1
+	while l:current >= l:start_line
+		call s:add_completions_from_line(l:matches, l:seen, l:current, l:word, l:fullword_re)
+		let l:current -= 1
+	endwhile
+
+	" Forward
+	let l:current = l:line + 1
+	while l:current <= l:end_line
+		call s:add_completions_from_line(l:matches, l:seen, l:current, l:word, l:fullword_re)
+		let l:current += 1
 	endwhile
 
 	return l:matches
