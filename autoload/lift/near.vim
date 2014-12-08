@@ -94,14 +94,14 @@ function lift#near#complete(findstart, base)
 
 	" Backwards
 	let l:current = l:line - 1
-	while l:current >= l:start_line
+	while l:current >= l:start_line && !complete_check()
 		call s:add_completions_from_line(l:matches, l:seen, l:current, l:word, l:fullword_re)
 		let l:current -= 1
 	endwhile
 
 	" Forward
 	let l:current = l:line + 1
-	while l:current <= l:end_line
+	while l:current <= l:end_line && !complete_check()
 		call s:add_completions_from_line(l:matches, l:seen, l:current, l:word, l:fullword_re)
 		let l:current += 1
 	endwhile
