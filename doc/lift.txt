@@ -50,7 +50,7 @@ The following variables can be used to configure Lift:
 		Show in the completion menu the name of the source that
 		provided each completion candidate. (Default: 1).
 
-`g:lift#max_list_items`
+`g:lift#max_items`
 		Maximum number of results to feed into Vim's completion
 		system. If the total amount of completion candidates
 		gathered from all the sources goes over this number, some
