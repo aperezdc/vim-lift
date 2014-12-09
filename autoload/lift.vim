@@ -97,32 +97,38 @@ function s:longest_source_name(sources)
 endfunction
 
 
+function s:complete_find_starts()
+	let b:lift_complete_sources = []
+	let b:lift_complete_starts = []
+
+	for src in lift#active_sources()
+		let func = lift#completion_function_for_name(src)
+		if len(func)
+			let pos = function(func)(1, '')
+			if pos >= 0
+				call add(b:lift_complete_sources, src)
+				call add(b:lift_complete_starts, pos)
+			endif
+		endif
+	endfor
+
+	if len(b:lift_complete_starts) == 0
+		return -1
+	endif
+
+	let pos = b:lift_complete_starts[0]
+	for item in b:lift_complete_starts
+		if item < pos
+			let pos = item
+		endif
+	endfor
+	return pos
+endfunction
+
+
 function lift#complete(findstart, base)
 	if a:findstart
-		let b:lift_complete_sources = []
-		let b:lift_complete_starts = []
-		for l:source in lift#active_sources()
-			let l:source_func = lift#completion_function_for_name(l:source)
-			if l:source_func != ''
-				let l:pos = function(l:source_func)(1, a:base)
-				if l:pos >= 0
-					call add(b:lift_complete_sources, l:source)
-					call add(b:lift_complete_starts, l:pos)
-				endif
-			endif
-		endfor
-
-		if len(b:lift_complete_starts) == 0
-			return -1
-		endif
-
-		let l:pos = b:lift_complete_starts[0]
-		for l:p in b:lift_complete_starts
-			if l:p < l:pos
-				let l:pos = l:p
-			endif
-		endfor
-		return l:pos
+		return s:complete_find_starts()
 	endif
 
 	let l:refresh = ''
