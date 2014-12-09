@@ -10,8 +10,8 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-let g:lift#max_list_items =
-	\ get(g:, 'lift#max_list', 100)
+let g:lift#max_items =
+	\ get(g:, 'lift#max_items', 100)
 let g:lift#max_source_items =
 	\ get(g:, 'lift#max_source_items', 50)
 let g:lift#sources =
@@ -131,58 +131,67 @@ function lift#complete(findstart, base)
 		return s:complete_find_starts()
 	endif
 
-	let l:refresh = ''
-	let l:annotation_length = s:longest_source_name(b:lift_complete_sources) + 1
-	for l:source in b:lift_complete_sources
-		let l:complete = lift#completion_function_for_name(l:source)
-		if l:complete != '' && l:complete != 'lift#complete'
-			let l:matches = function(l:complete)(0, a:base)
+	let annotation_length = s:longest_source_name(b:lift_complete_sources) + 1
+	let total_count = 0
+	let refresh = ''
 
-			" If we are given a dictionary, make it into a list and check .refresh
-			if type(l:matches) == type({})
-				let l:dict = l:matches
-				unlet l:matches  " Avoid error about different type on reassignment
-				let l:matches = get(l:dict, 'words', [])
-				if get(l:dict, 'refresh', '') == 'always'
-					let l:refresh = 'always'
-				endif
-				unlet l:dict
-			endif
-
-			" Add a note indicating which one
-			if g:lift#annotate_sources
-				let l:count = 0
-				for l:match in l:matches
-					" Convert strings to dictionary items to be able to add the source name.
-					if type(l:match) == type('')
-						call complete_add({ 'word': l:match,
-						                  \ 'menu': printf('%*s', l:annotation_length, l:source) })
-					else
-						if has_key(l:match, 'menu') && len(l:match.menu) > 0
-							let l:match.menu = printf('%*s · %s', l:annotation_length, l:source, l:match.menu)
-						else
-							let l:match.menu = printf('%*s', l:annotation_length,  l:source)
-						endif
-						call complete_add(l:match)
-					endif
-
-					let l:count += 1
-					if l:count > g:lift#max_source_items
-						break
-					endif
-
-					" Allow l:match to be of different type in the next iteration.
-					unlet l:match
-				endfor
-			else
-				for l:match in l:matches
-					call complete_add(l:match)
-				endfor
-			endif
-			unlet l:matches
+	for src in b:lift_complete_sources
+		let func = lift#completion_function_for_name(src)
+		if !len(func) || l:func == 'lift#complete'
+			continue
 		endif
 
-		if complete_check()
+		let matches = function(func)(0, a:base)
+
+		" If we are given a dictionary, make it into a list and check .refresh
+		if type(matches) == type({})
+			let d = matches
+			unlet matches  " Avoid error about different type on reassignment
+			let matches = get(d, 'words', [])
+			if get(d, 'refresh', '') == 'always'
+				let refresh = 'always'
+			endif
+			unlet d
+		endif
+
+		let source_count = 0
+		for mm in matches
+			if g:lift#annotate_sources
+				" Convert strings to dictionaries, to be able to annotate
+				" the completion result with the name of the source.
+				if type(mm) == type('')
+					let d = { 'word': mm }
+				else
+					let d = mm
+				endif
+
+				" Variable 'd' now always contains a dictionary. Either
+				" prefix the source name to an existing 'menu' string, or
+				" add the 'menu' key if it was not present.
+				if has_key(d, 'menu') && len(d.menu) > 0
+					let d.menu = printf('%*s · %s', annotation_length, src, d.menu)
+				else
+					let d.menu = printf('%*s', annotation_length, src)
+				endif
+				let mm = l:d
+			endif
+
+			call complete_add(mm)
+			unlet mm  " Allow 'mm' to change type
+
+			let source_count += 1
+			let total_count += 1
+
+			if complete_check()
+						\ || source_count > g:lift#max_source_items
+						\ || total_count > g:lift#max_items
+				break
+			endif
+		endfor
+
+		unlet matches
+
+		if complete_check() || total_count > g:lift#max_items
 			break
 		endif
 	endfor
