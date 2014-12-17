@@ -199,7 +199,7 @@ function lift#complete(findstart, base)
 				" Convert strings to dictionaries, to be able to annotate
 				" the completion result with the name of the source.
 				if type(mm) == type('')
-					let d = { 'word': mm }
+					let d = { 'word': mm, 'abbr': mm }
 				else
 					let d = mm
 				endif
