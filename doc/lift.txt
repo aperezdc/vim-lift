@@ -16,6 +16,8 @@ Sources                       |lift-sources|
   Syntax keywords             |lift-source-syntax|
   Adding sources              |lift-source-custom|
 API Reference                 |lift-api-reference|
+Tips                          |lift-tips|
+  Using clang_complete        |lift-tips-clang-complete|
 
 
 ===========================================================================
@@ -198,6 +200,31 @@ lift#complete({findstart}, {base})
 	The Lift completion function. You do not need to use it directly,
 	as lift will handle setting 'completefunc' to if while in insert
 	mode, and restoring the original value when in normal mode.
+
+
+===========================================================================
+TIPS                                                            *lift-tips*
+
+It is recommended to disable the `longest` flag in the 'completeopt' option.
+This can be done by adding the following to your `~/.vimrc`:
+>
+	set completeopt-=longest
+<
+
+---------------------------------------------------------------------------
+TIPS - USING CLANG-COMPLETE                      *lift-tips-clang-complete*
+
+The `clang_complete` plug-in should work out of the box, as it installs
+both a 'completefunc' and an 'omnifunc' that Lift will use automatically.
+
+The author finds best to use `clang_complete` as a source with the following
+settings:
+>
+	let g:clang_make_default_keymappings = 0
+	let g:clang_snippets = 0
+<
+This prevents `clang_complete` from defining key mappings, so completion is
+always triggered by Lift.
 
 
 vim:tw=78:sw=8:ts=8:ft=help:norl:noet
