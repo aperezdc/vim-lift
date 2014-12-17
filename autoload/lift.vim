@@ -137,6 +137,7 @@ function lift#complete(findstart, base)
 	let total_count = 0
 	let refresh = ''
 
+	let seen_candidates = {}
 	for src in b:lift_complete_sources
 		let func = lift#completion_function_for_name(src)
 		if !len(func) || l:func == 'lift#complete'
@@ -166,6 +167,14 @@ function lift#complete(findstart, base)
 				else
 					let d = mm
 				endif
+
+				" Keep track of already-seen candidates, and do not add them
+				" more than once to the final list of completion candidates.
+				if has_key(seen_candidates, mm.word)
+					unlet mm  " Allow 'mm' to change type
+					continue
+				endif
+				let seen_candidates[mm.word] = 1
 
 				" Variable 'd' now always contains a dictionary. Either
 				" prefix the source name to an existing 'menu' string, or
