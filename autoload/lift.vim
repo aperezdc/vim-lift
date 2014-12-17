@@ -257,7 +257,7 @@ function lift#trigger_completion()
 	if !l:col || getline('.')[l:col - 1] =~ '\s'
 		return "\<Tab>"
 	endif
-	return "\<C-x>\<C-u>"
+	return "\<C-x>\<C-u>\<C-u>"
 endfunction
 
 
