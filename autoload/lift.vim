@@ -164,7 +164,7 @@ function lift#complete(findstart, base)
 		return s:complete_find_starts()
 	endif
 
-	let annotation_length = s:longest_source_name(b:lift_complete_sources) + 1
+	let annotation_length = s:longest_source_name(b:lift_complete_sources)
 	let total_count = 0
 	let refresh = ''
 
