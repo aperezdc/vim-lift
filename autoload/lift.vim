@@ -100,15 +100,17 @@ endfunction
 function s:complete_find_starts()
 	let b:lift_complete_sources = []
 	let b:lift_complete_starts = []
+	let seen_functions = {}
 
 	for src in lift#active_sources()
 		let func = lift#completion_function_for_name(src)
-		if len(func)
+		if len(func) && !has_key(seen_functions, func)
 			let pos = function(func)(1, '')
 			if pos >= 0
 				call add(b:lift_complete_sources, src)
 				call add(b:lift_complete_starts, pos)
 			endif
+			let seen_functions[func] = 1
 		endif
 	endfor
 
