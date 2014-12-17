@@ -169,7 +169,6 @@ function lift#complete(findstart, base)
 	let refresh = ''
 
 	call s:dbgmsg(1, 'complete: ↓ start ↓')
-	let seen_candidates = {}
 	for src in b:lift_complete_sources
 		let func = lift#completion_function_for_name(src)
 		if !len(func) || l:func == 'lift#complete'
@@ -205,12 +204,8 @@ function lift#complete(findstart, base)
 				endif
 				unlet mm  " Allow 'mm' to change type
 
-				" Keep track of already-seen candidates, and do not add them
-				" more than once to the final list of completion candidates.
-				if has_key(seen_candidates, d.word)
-					continue
-				endif
-				let seen_candidates[d.word] = 1
+				" Remove duplicates.
+				let d.dup = 0
 
 				" Variable 'd' now always contains a dictionary. Either
 				" prefix the source name to an existing 'menu' string, or
