@@ -96,6 +96,7 @@ The following sources are included with Lift:
   - Nearby words (|lift-source-near|)
   - Omni Completion (|lift-source-omni|)
   - User Completion (|lift-source-user|)
+  - Syntax keywords (|lift-source-syntax|)
 
 Any completion
 
