@@ -18,6 +18,15 @@ let g:lift#sources =
 	\ get(g:, 'lift#sources', { '_': ['omni', 'near', 'user'] })
 let g:lift#annotate_sources =
 	\ get(g:, 'lift#annotate_sources', 1)
+let g:lift#debug_messages =
+	\ get(g:, 'lift#debug_messages', 0)
+
+
+function s:dbgmsg(level, msg)
+	if g:lift#debug_messages >= a:level
+		echomsg '(lift:' . a:level . ') ' . a:msg
+	endif
+endfunction
 
 
 function lift#active_sources()
@@ -128,6 +137,28 @@ function s:complete_find_starts()
 endfunction
 
 
+function s:format_completion_item(mm)
+	if type(a:mm) == type('')
+		return '[s] "' . a:mm . '"'
+	elseif type(a:mm) == type({})
+		let info = ''
+		if has_key(a:mm, 'info') && len(a:mm['info']) > 0
+			let l:info = '...'
+		endif
+		return '[d] word="' . get(a:mm, 'word', '') .
+					\ '" abbr="' . get(a:mm, 'abbr', '') .
+					\ '" menu="' . get(a:mm, 'menu', '') .
+					\ '" info="' . l:info .
+					\ '" kind="' . get(a:mm, 'kind', '') .
+					\ '" dup='   . get(a:mm, 'dup', 1) .
+					\ ' empty='  . get(a:mm, 'empty', 0) .
+					\ ' icase='  . get(a:mm, 'icase', 0)
+	else
+		return '[i] invalid type=' . type(a:mm)
+	endif
+endf
+
+
 function lift#complete(findstart, base)
 	if a:findstart
 		return s:complete_find_starts()
@@ -137,14 +168,17 @@ function lift#complete(findstart, base)
 	let total_count = 0
 	let refresh = ''
 
+	call s:dbgmsg(1, 'complete: ↓ start ↓')
 	let seen_candidates = {}
 	for src in b:lift_complete_sources
 		let func = lift#completion_function_for_name(src)
 		if !len(func) || l:func == 'lift#complete'
+			call s:dbgmsg(1, 'complete: source: ' . src . ' skipped')
 			continue
 		endif
 
 		let matches = function(func)(0, a:base)
+		call s:dbgmsg(1, 'complete: source: ' . src . ' (' . len(matches) . ' matches)')
 
 		" If we are given a dictionary, make it into a list and check .refresh
 		if type(matches) == type({})
@@ -153,12 +187,14 @@ function lift#complete(findstart, base)
 			let matches = get(d, 'words', [])
 			if get(d, 'refresh', '') == 'always'
 				let refresh = 'always'
+				call d:dbgmsg(1, ' * got refresh flag')
 			endif
 			unlet d
 		endif
 
 		let source_count = 0
 		for mm in matches
+			call s:dbgmsg(2, ' - match: ' . s:format_completion_item(mm))
 			if g:lift#annotate_sources
 				" Convert strings to dictionaries, to be able to annotate
 				" the completion result with the name of the source.
@@ -185,6 +221,8 @@ function lift#complete(findstart, base)
 					let d.menu = printf('%*s', annotation_length, src)
 				endif
 				let mm = l:d
+
+				call s:dbgmsg(2, '      --> ' . s:format_completion_item(mm))
 			endif
 
 			call complete_add(mm)
@@ -206,6 +244,7 @@ function lift#complete(findstart, base)
 			break
 		endif
 	endfor
+	call s:dbgmsg(1, 'complete: ↑ end ↑')
 	return { 'words': [], 'refresh': l:refresh }
 endfunction
 
