@@ -203,14 +203,14 @@ function lift#complete(findstart, base)
 				else
 					let d = mm
 				endif
+				unlet mm  " Allow 'mm' to change type
 
 				" Keep track of already-seen candidates, and do not add them
 				" more than once to the final list of completion candidates.
-				if has_key(seen_candidates, mm.word)
-					unlet mm  " Allow 'mm' to change type
+				if has_key(seen_candidates, d.word)
 					continue
 				endif
-				let seen_candidates[mm.word] = 1
+				let seen_candidates[d.word] = 1
 
 				" Variable 'd' now always contains a dictionary. Either
 				" prefix the source name to an existing 'menu' string, or
