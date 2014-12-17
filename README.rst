@@ -7,6 +7,22 @@ completion by itself, but it aggregates (“lifts” up) completion
 candidates from other completion sources and makes the completion
 popup show an unified list of candidates.
 
+Sources
+=======
+
+The following plug-ins are known to work well as completion sources
+out of the box (no manual configuration needed):
+
+- [clang_complete](https://github.com/Rip-Rip/clang_complete)
+- [jedi](https://github.com/davidhalter/jedi-vim)
+- [YouCompleteMe](https://valloric.github.io/YouCompleteMe/)
+- [vim-ledger](https://github.com/ledger/vim-ledger)
+
+Make sure to check the documentation (section `lift-tips`) for additional
+information on how to configure those plug-ins to be used as completion
+sources.
+
+
 Installation
 ============
 
