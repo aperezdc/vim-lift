@@ -77,6 +77,15 @@ The following variables can be used to configure Lift:
 		with |jedi-vim|.  (Default: 1 if 'completeopt' contains
 		`preview`).
 
+`g:lift#shortcut_single_source`
+		When only one single source is configured, use a shortcut
+		and call directly into the completion function of the
+		source. (Default: `0`)
+
+		Note that this effectively bypasses the additional result
+		filtering done by the plug-in, and the following options
+		will appear to have no effect: `g:lift#max_source_items`,
+		`g:lift#max_items`, `g:lift#annotate_sources`.
 
 ===========================================================================
 KEY MAPPINGS                                           *lift-key-mappings*

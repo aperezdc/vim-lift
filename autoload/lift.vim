@@ -20,6 +20,8 @@ let g:lift#annotate_sources =
 	\ get(g:, 'lift#annotate_sources', 1)
 let g:lift#debug_messages =
 	\ get(g:, 'lift#debug_messages', 0)
+let g:lift#shortcut_single_source =
+	\ get(g:, 'lift#shortcut_single_source', 0)
 
 
 function s:dbgmsg(level, msg)
@@ -160,6 +162,16 @@ endf
 
 
 function lift#complete(findstart, base)
+	" If there is a single source for this buffer, just shortcut to it.
+	if g:lift#shortcut_single_source
+		let srcs = lift#active_sources()
+		if len(srcs) == 1
+			let func = lift#completion_function_for_name(srcs[0])
+			return function(func)(a:findstart, a:base)
+		endif
+		unlet srcs
+	endif
+
 	if a:findstart
 		return s:complete_find_starts()
 	endif
